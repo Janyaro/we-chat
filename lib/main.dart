@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:we_chat/ViewModels/loginScreenModel.dart';
 import 'package:we_chat/screenServices/profileService.dart';
 import 'package:we_chat/screens/auth/screen/splash_screen.dart';
+import 'package:we_chat/screens/screen/hone.dart';
 import 'firebase_options.dart';
 
 void main() async {

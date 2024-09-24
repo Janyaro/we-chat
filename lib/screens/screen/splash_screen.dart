@@ -18,7 +18,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
     SystemChrome.setSystemUIOverlayStyle(
-        const SystemUiOverlayStyle(systemNavigationBarColor: Colors.white));
+        const SystemUiOverlayStyle(systemNavigationBarColor: Colors.white , statusBarColor: Colors.white));
     Future.delayed(const Duration(microseconds: 5), () {
       setState(() {
         isAnimate = true;

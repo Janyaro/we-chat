@@ -87,6 +87,11 @@ class Api {
       'image': me.image,
     });
   }
+
+  /// *************message related Api
+  static Stream<QuerySnapshot<Map<String, dynamic>>> getAllMessage() {
+    return firestore.collection('message').snapshots();
+  }
 }
 
 // create the new user
