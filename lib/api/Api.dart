@@ -5,6 +5,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
 import 'package:we_chat/models/chatmodel.dart';
+import 'package:we_chat/models/messageModel.dart';
+import 'package:we_chat/widget/messageCart.dart';
 
 class Api {
   static FirebaseAuth auth = FirebaseAuth.instance;
@@ -66,6 +68,24 @@ class Api {
         .snapshots();
   }
 
+  // get user information
+  static Stream<QuerySnapshot<Map<String, dynamic>>> getSpecficUserInfo(
+      chatmodel user) {
+    return firestore
+        .collection('users')
+        .where('id', isEqualTo: user.id)
+        .snapshots(); // This listens to re al-time updates
+  }
+
+  // update Active status
+
+  static Future<void> updateActiveStatus(bool isonline) async {
+    await firestore.collection('users').doc(user!.uid).update({
+      'isonline': isonline,
+      'last_active': DateTime.now().millisecondsSinceEpoch, // Store timestamp
+    });
+  }
+
   // ignore: non_constant_identifier_names
   static Future<void> ChangeUserInfo() async {
     await firestore
@@ -88,9 +108,72 @@ class Api {
     });
   }
 
+  static String conversion_id(String id) => user.uid.hashCode <= id.hashCode
+      ? '${user.uid}_$id'
+      : '${id}_${user.uid}';
+
   /// *************message related Api
-  static Stream<QuerySnapshot<Map<String, dynamic>>> getAllMessage() {
-    return firestore.collection('message').snapshots();
+  static Stream<QuerySnapshot<Map<String, dynamic>>> getAllMessage(
+      chatmodel user) {
+    return firestore
+        .collection(
+            'chatMessages/${conversion_id(user.id.toString())}/message/')
+        .orderBy('sent', descending: true)
+        .snapshots();
+  }
+
+  static Future<void> SendMessage(
+      chatmodel chatUser, String msg, Type type) async {
+    final time = DateTime.now().millisecondsSinceEpoch;
+    final messageModel message = messageModel(
+        msg: msg,
+        fromId: user.uid,
+        told: chatUser.id,
+        type: type,
+        sent: time.toString(),
+        read: '');
+
+    final ref = firestore.collection(
+        'chatMessages/${conversion_id(chatUser.id.toString())}/message/');
+
+    try {
+      await ref.doc(time.toString()).set(message.toJson());
+      print('Message sent successfully');
+    } catch (e) {
+      print('Error sending message: $e');
+    }
+  }
+
+  static Future<void> updateRead(messageModel message) async {
+    // Performing the update
+    firestore
+        .collection(
+            'chatMessages/${conversion_id(message.fromId.toString())}/message/')
+        .doc(message.sent)
+        .update({'read': DateTime.now().millisecondsSinceEpoch.toString()});
+  }
+
+  static Stream<QuerySnapshot<Map<String, dynamic>>> getLastMessage(
+      chatmodel user) {
+    return firestore
+        .collection(
+            'chatMessages/ ${conversion_id(user.id.toString())}/message/')
+        .orderBy('sent', descending: true)
+        .limit(1)
+        .snapshots();
+  }
+
+  static Future<void> getCameraImage(chatmodel user, File file) async {
+    final ext = file.path.split('.').last;
+    final ref = storage.ref().child(
+        'image/${conversion_id(user.id.toString())}/${DateTime.now().millisecondsSinceEpoch}.$ext');
+    await ref
+        .putFile(file, SettableMetadata(contentType: 'image/$ext'))
+        .then((p0) {
+      print('data transfer successfully ${p0.bytesTransferred / 1000} kb');
+    });
+    final imageUrl = await ref.getDownloadURL();
+    await Api.SendMessage(user, imageUrl, Type.Image);
   }
 }
 

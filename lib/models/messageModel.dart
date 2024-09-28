@@ -15,7 +15,7 @@ class messageModel {
     msg = json['msg'].toString();
     read = json['read'].toString();
     told = json['told'].toString();
-    type = json['type'].toString() == Type.Image.name ? Type.Image : Type.Text;
+    type = json['type'] == 'Image' ? Type.Image : Type.Text;
     sent = json['sent'].toString();
     fromId = json['fromId'].toString();
   }
@@ -25,7 +25,8 @@ class messageModel {
     data['msg'] = this.msg;
     data['read'] = this.read;
     data['told'] = this.told;
-    data['type'] = this.type;
+    data['type'] =
+        this.type == Type.Image ? 'Image' : 'Text'; // Convert enum to string
     data['sent'] = this.sent;
     data['fromId'] = this.fromId;
     return data;
