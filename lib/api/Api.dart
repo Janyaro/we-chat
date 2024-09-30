@@ -11,18 +11,6 @@ class Api {
   static FirebaseAuth auth = FirebaseAuth.instance;
   static FirebaseFirestore firestore = FirebaseFirestore.instance;
   static FirebaseStorage storage = FirebaseStorage.instance;
-  // firebase massaging
-  static FirebaseMessaging fmessaging = FirebaseMessaging.instance;
-  // to get the token
-  static Future<void> getFirebaseToken() async {
-    await fmessaging.requestPermission();
-    await fmessaging.getToken().then((token) {
-      if (token != null) {
-        me.pushToken = token;
-        print('token is the given by the class in the outside $token');
-      }
-    });
-  }
 
   // Fetch the current user
   static User get user => auth.currentUser!;
@@ -48,7 +36,7 @@ class Api {
         .then((user) async {
       if (user.exists) {
         me = ChatModel.fromJson(user.data()!);
-        await getFirebaseToken();
+
         Api.updateActiveStatus(true);
       } else {
         await CreateUser();
