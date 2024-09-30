@@ -2,13 +2,14 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:we_chat/api/Api.dart';
 import 'package:we_chat/helper/date_time_utils.dart';
-import 'package:we_chat/models/chatmodel.dart';
+import 'package:we_chat/models/ChatModel.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:we_chat/models/messageModel.dart';
 import 'package:we_chat/screens/screen/chatscreen.dart';
+import 'package:we_chat/widget/dialog/profile_dialog.dart';
 
 class ChatUserCard extends StatefulWidget {
-  final chatmodel user;
+  final ChatModel user;
   const ChatUserCard({
     super.key,
     required this.user,
@@ -52,15 +53,23 @@ class _ChatUserCardState extends State<ChatUserCard> {
                   // leading: const CircleAvatar(
                   //   child: Icon(CupertinoIcons.person),
                   // ),
-                  leading: ClipOval(
-                    child: CachedNetworkImage(
-                      width: 60,
-                      height: 60,
-                      imageUrl: widget.user.image.toString(),
-                      placeholder: (context, url) =>
-                          CircularProgressIndicator(),
-                      errorWidget: (context, url, error) => const CircleAvatar(
-                        child: Icon(CupertinoIcons.person),
+                  leading: InkWell(
+                    onTap: () {
+                      showDialog(
+                          context: context,
+                          builder: (_) => ProfileDialog(user: widget.user));
+                    },
+                    child: ClipOval(
+                      child: CachedNetworkImage(
+                        width: 60,
+                        height: 60,
+                        imageUrl: widget.user.image.toString(),
+                        placeholder: (context, url) =>
+                            CircularProgressIndicator(),
+                        errorWidget: (context, url, error) =>
+                            const CircleAvatar(
+                          child: Icon(CupertinoIcons.person),
+                        ),
                       ),
                     ),
                   ),

@@ -1,18 +1,19 @@
 import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:we_chat/Utility/mysnakbar.dart';
 import 'package:we_chat/api/Api.dart';
-import 'package:we_chat/models/chatmodel.dart';
+import 'package:we_chat/models/ChatModel.dart';
 import 'package:we_chat/screenServices/profileService.dart';
 import 'package:we_chat/screens/auth/screen/login_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
-  final chatmodel user;
+  final ChatModel user;
   const ProfileScreen({super.key, required this.user});
 
   @override
@@ -98,7 +99,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     height: media.height * 0.01,
                   ),
                   Text(
-                    widget.user.eMail.toString(),
+                    widget.user.email.toString(),
                     style: const TextStyle(
                         fontSize: 16, fontWeight: FontWeight.w600),
                   ),
@@ -201,9 +202,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
           child: FloatingActionButton.extended(
               backgroundColor: Colors.redAccent,
               onPressed: () async {
+                await Api.updateActiveStatus(false);
                 await Api.auth.signOut().then((value) async {
                   await GoogleSignIn().signOut().then((value) {
                     Navigator.pop(context);
+                    Api.auth = FirebaseAuth.instance;
                     // Navigator.pop(context);
                     Navigator.pushReplacement(
                         context,

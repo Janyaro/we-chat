@@ -3,18 +3,20 @@ import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:we_chat/api/Api.dart';
 import 'package:we_chat/helper/date_time_utils.dart';
-import 'package:we_chat/models/chatmodel.dart';
+import 'package:we_chat/models/ChatModel.dart';
 import 'package:we_chat/models/messageModel.dart';
+import 'package:we_chat/screens/screen/view_user_profile.dart';
 import 'package:we_chat/widget/messageCart.dart';
 
 class Chatscreen extends StatefulWidget {
-  final chatmodel user;
+  final ChatModel user;
   const Chatscreen({super.key, required this.user});
 
   @override
@@ -138,76 +140,90 @@ class _ChatscreenState extends State<Chatscreen> {
 
   Widget _app() {
     final media = MediaQuery.of(context).size;
-    return StreamBuilder(
-      stream: Api.getSpecficUserInfo(widget.user),
-      builder: (context, snapshot) {
-        // Check if the snapshot has data and is not null
-        if (snapshot.hasData && snapshot.data != null) {
-          final data = snapshot.data!.docs;
-          final list =
-              data?.map((e) => chatmodel.fromJson(e.data())).toList() ?? [];
-
-          return Row(
-            children: [
-              IconButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                icon: const Icon(
-                  Icons.arrow_back,
-                  color: Colors.white,
-                ),
-              ),
-              SizedBox(
-                height: media.height * 0.03,
-              ),
-              ClipOval(
-                child: CachedNetworkImage(
-                  height: media.height * 0.05, // Set height for the circle
-                  width: media.height * 0.05, // Set width for the circle
-                  imageUrl: list.isNotEmpty
-                      ? list[0].image.toString()
-                      : widget.user.image.toString(),
-                  errorWidget: (context, url, error) => const CircleAvatar(
-                    child: Icon(CupertinoIcons.person),
+    return InkWell(
+      onTap: () {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => viewUserProfile(
+                      user: widget.user,
+                    )));
+      },
+      child: StreamBuilder(
+        stream: Api.getSpecficUserInfo(widget.user),
+        builder: (context, snapshot) {
+          // Check if the snapshot has data and is not null
+          if (snapshot.hasData && snapshot.data != null) {
+            final data = snapshot.data!.docs;
+            final list =
+                data?.map((e) => ChatModel.fromJson(e.data())).toList() ?? [];
+            print(DateTime.now().millisecondsSinceEpoch.toString());
+            return Row(
+              children: [
+                IconButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  icon: const Icon(
+                    Icons.arrow_back,
+                    color: Colors.white,
                   ),
                 ),
-              ),
-              SizedBox(
-                width: media.width * 0.03,
-              ),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    list.isNotEmpty
-                        ? list[0].name.toString()
-                        : widget.user.name.toString(),
-                    style: const TextStyle(
-                      fontSize: 16,
-                      color: Colors.black,
-                      fontWeight: FontWeight.w500,
+                SizedBox(
+                  height: media.height * 0.03,
+                ),
+                ClipOval(
+                  child: CachedNetworkImage(
+                    height: media.height * 0.05, // Set height for the circle
+                    width: media.height * 0.05, // Set width for the circle
+                    imageUrl: list.isNotEmpty
+                        ? list[0].image.toString()
+                        : widget.user.image.toString(),
+                    errorWidget: (context, url, error) => const CircleAvatar(
+                      child: Icon(CupertinoIcons.person),
                     ),
                   ),
-                  Text(
-                    list.isNotEmpty
-                        ? list[0].isonline!
-                            ? 'online'
-                            : list[0].lastActive.toString()
-                        : widget.user.lastActive.toString(),
-                    style: TextStyle(fontSize: 13),
-                  ),
-                ],
-              ),
-            ],
-          );
-        } else {
-          return Center(
-              child:
-                  CircularProgressIndicator()); // Show a loading indicator while waiting for data
-        }
-      },
+                ),
+                SizedBox(
+                  width: media.width * 0.03,
+                ),
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      list.isNotEmpty
+                          ? list[0].name.toString()
+                          : widget.user.name.toString(),
+                      style: const TextStyle(
+                        fontSize: 16,
+                        color: Colors.black,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    Text(
+                      list.isNotEmpty
+                          ? list[0].isOnline!
+                              ? 'online'
+                              : DateTimeUtils.getLastuserActiveTime(
+                                  context: context,
+                                  lastActive: list[0].lastActive.toString())
+                          : DateTimeUtils.getLastuserActiveTime(
+                              context: context,
+                              lastActive: widget.user.lastActive.toString()),
+                      style: TextStyle(fontSize: 13),
+                    ),
+                  ],
+                ),
+              ],
+            );
+          } else {
+            return Center(
+                child:
+                    CircularProgressIndicator()); // Show a loading indicator while waiting for data
+          }
+        },
+      ),
     );
   }
 

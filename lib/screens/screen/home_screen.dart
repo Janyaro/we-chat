@@ -1,8 +1,11 @@
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:we_chat/api/Api.dart';
-import 'package:we_chat/models/chatmodel.dart';
+import 'package:we_chat/models/ChatModel.dart';
 import 'package:we_chat/screens/screen/profile_screen.dart';
 import 'package:we_chat/widget/chat_user_card.dart';
 
@@ -18,10 +21,19 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     Api.getUserInfo();
+
+    SystemChannels.lifecycle.setMessageHandler((message) {
+      print(message);
+      if (Api.auth.currentUser != null) {
+        if (message.toString().contains('resume')) Api.updateActiveStatus(true);
+        if (message.toString().contains('pause')) Api.updateActiveStatus(false);
+      }
+      return Future.value(message);
+    });
   }
 
-  List<chatmodel> list = [];
-  List<chatmodel> searchList = [];
+  List<ChatModel> list = [];
+  List<ChatModel> searchList = [];
   bool isSearch = false;
   @override
   Widget build(BuildContext context) {
@@ -56,7 +68,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           if (i.name!
                                   .toLowerCase()
                                   .contains(val.toLowerCase()) ||
-                              i.eMail!
+                              i.email!
                                   .toLowerCase()
                                   .contains(val.toLowerCase())) {
                             searchList.add(i);
@@ -92,42 +104,37 @@ class _HomeScreenState extends State<HomeScreen> {
               ],
             ),
             body: StreamBuilder(
-                stream: Api.getUsers(),
-                builder: (context, snapshot) {
-                  switch (snapshot.connectionState) {
-                    case ConnectionState.none:
-                    case ConnectionState.waiting:
-                      return const Center(
-                        child: CircularProgressIndicator(),
+              stream: Api.getUsers(),
+              builder: (context, snapshot) {
+                if (!snapshot.hasData) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+
+                // Assuming snapshot has Map<String, dynamic> and you're converting it to ChatModel
+                final data = snapshot.data!.docs;
+                list = data.map((e) => ChatModel.fromJson(e.data())).toList();
+
+                if (list.isNotEmpty) {
+                  return ListView.builder(
+                    itemCount:
+                        isSearch ? searchList.length : snapshot.data!.size,
+                    itemBuilder: (context, index) {
+                      return ChatUserCard(
+                        user: isSearch ? searchList[index] : list[index],
                       );
-                    case ConnectionState.active:
-                    case ConnectionState.done:
-                      final data = snapshot.data!.docs;
-                      list = data
-                          .map((e) => chatmodel.fromJson(e.data()))
-                          .toList();
-                      if (list.isNotEmpty) {
-                        return ListView.builder(
-                            itemCount: isSearch
-                                ? searchList.length
-                                : snapshot.data!.size,
-                            itemBuilder: (context, index) {
-                              return ChatUserCard(
-                                user:
-                                    isSearch ? searchList[index] : list[index],
-                              );
-                            });
-                      } else {
-                        return const Center(
-                          child: Text(
-                            'No Connection Established',
-                            style: TextStyle(
-                                fontSize: 20, fontWeight: FontWeight.bold),
-                          ),
-                        );
-                      }
-                  }
-                }),
+                    },
+                  );
+                } else {
+                  return const Center(
+                    child: Text(
+                      'No Connection Established',
+                      style:
+                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                    ),
+                  );
+                }
+              },
+            ),
             floatingActionButton: FloatingActionButton(
               onPressed: () async {
                 if (kDebugMode) {
