@@ -1,18 +1,10 @@
-import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:google_sign_in/google_sign_in.dart';
-import 'package:we_chat/Utility/mysnakbar.dart';
-import 'package:we_chat/api/Api.dart';
 import 'package:we_chat/helper/date_time_utils.dart';
 import 'package:we_chat/models/ChatModel.dart';
-import 'package:we_chat/screenServices/profileService.dart';
-import 'package:we_chat/screens/auth/screen/login_screen.dart';
-
+// ignore: camel_case_types
 class viewUserProfile extends StatefulWidget {
   final ChatModel user;
   const viewUserProfile({super.key, required this.user});
@@ -97,7 +89,7 @@ class _viewUserProfileState extends State<viewUserProfile> {
         floatingActionButton: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(
+           const Text(
               'Join On :',
               style: TextStyle(
                   fontSize: 16,

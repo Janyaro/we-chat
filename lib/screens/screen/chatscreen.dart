@@ -1,12 +1,10 @@
-import 'dart:convert';
+
 import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:we_chat/api/Api.dart';
 import 'package:we_chat/helper/date_time_utils.dart';
@@ -24,10 +22,10 @@ class Chatscreen extends StatefulWidget {
 }
 
 class _ChatscreenState extends State<Chatscreen> {
-  @override
   List<messageModel> list = [];
   bool showEmoji = false, uploadImages = false;
   final _textController = TextEditingController();
+  @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus,
@@ -156,7 +154,7 @@ class _ChatscreenState extends State<Chatscreen> {
           if (snapshot.hasData && snapshot.data != null) {
             final data = snapshot.data!.docs;
             final list =
-                data?.map((e) => ChatModel.fromJson(e.data())).toList() ?? [];
+                data.map((e) => ChatModel.fromJson(e.data())).toList() ?? [];
             print(DateTime.now().millisecondsSinceEpoch.toString());
             return Row(
               children: [
@@ -211,14 +209,14 @@ class _ChatscreenState extends State<Chatscreen> {
                           : DateTimeUtils.getLastuserActiveTime(
                               context: context,
                               lastActive: widget.user.lastActive.toString()),
-                      style: TextStyle(fontSize: 13),
+                      style: const TextStyle(fontSize: 13, color: Colors.white),
                     ),
                   ],
                 ),
               ],
             );
           } else {
-            return Center(
+          return const Center(
                 child:
                     CircularProgressIndicator()); // Show a loading indicator while waiting for data
           }

@@ -110,14 +110,14 @@ class Api {
     });
   }
 
-  // Generate conversation ID
+  // Generate conversation ID for communication between the users
   static String conversion_id(String id) => user.uid.hashCode <= id.hashCode
       ? '${user.uid}_$id'
       : '${id}_${user.uid}';
 
   /// ************* Message-related API *************
 
-  // Fetch all messages
+  // Fetch all messages of the users 
   static Stream<QuerySnapshot<Map<String, dynamic>>> getAllMessage(
       ChatModel user) {
     return firestore
@@ -127,7 +127,7 @@ class Api {
         .snapshots();
   }
 
-  // Send a message
+  // Send a message to the useer 
   static Future<void> SendMessage(
       ChatModel chatUser, String msg, Type type) async {
     final time = DateTime.now().millisecondsSinceEpoch;

@@ -34,12 +34,7 @@ class _ChatUserCardState extends State<ChatUserCard> {
           child: StreamBuilder(
               stream: Api.getLastMessage(widget.user),
               builder: (context, snapshot) {
-                // final data = snapshot.data!.docs;
-                // final list =
-                //     data.map((e) => messageModel.fromJson(e.data())).toList();
-                // if (list.isNotEmpty) {
-                //   message = list[0];
-                // }
+                
                 if (snapshot.hasData && snapshot.data != null) {
                   final data = snapshot.data!.docs;
                   final list =
@@ -50,9 +45,7 @@ class _ChatUserCardState extends State<ChatUserCard> {
                 }
 
                 return ListTile(
-                  // leading: const CircleAvatar(
-                  //   child: Icon(CupertinoIcons.person),
-                  // ),
+                  
                   leading: InkWell(
                     onTap: () {
                       showDialog(
