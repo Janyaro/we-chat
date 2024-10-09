@@ -153,7 +153,7 @@ class _ChatscreenState extends State<Chatscreen> {
           if (snapshot.hasData && snapshot.data != null) {
             final data = snapshot.data!.docs;
             final list =
-                data.map((e) => ChatModel.fromJson(e.data())).toList() ?? [];
+                data.map((e) => ChatModel.fromJson(e.data())).toList() ;
             print(DateTime.now().millisecondsSinceEpoch.toString());
             return Row(
               children: [
