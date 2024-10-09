@@ -66,7 +66,7 @@ class _viewUserProfileState extends State<viewUserProfile> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text(
+                    const Text(
                       'About :',
                       style: TextStyle(
                           fontSize: 16,

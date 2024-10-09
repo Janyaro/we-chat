@@ -51,15 +51,15 @@ class ChatModel {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
-    data['image'] = this.image;
-    data['name'] = this.name;
-    data['about'] = this.about;
-    data['e-mail'] = this.email; // Keeping the original key
-    data['created_at'] = this.createdAt;
-    data['pushtoken'] = this.pushToken;
-    data['last_active'] = this.lastActive;
-    data['id'] = this.id;
-    data['isonline'] = this.isOnline; // Directly use the bool value
+    data['image'] = image;
+    data['name'] = name;
+    data['about'] = about;
+    data['e-mail'] = email; // Keeping the original key
+    data['created_at'] = createdAt;
+    data['pushtoken'] = pushToken;
+    data['last_active'] = lastActive;
+    data['id'] = id;
+    data['isonline'] = isOnline; // Directly use the bool value
     return data;
   }
 }

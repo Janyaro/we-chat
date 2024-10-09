@@ -79,9 +79,16 @@ class _HomeScreenState extends State<HomeScreen> {
                         }
                       },
                     )
-                  : const Text('We Chat'),
+                  : const Text(
+                      'We Chat',
+                      style: TextStyle(color: Colors.white),
+                    ),
               centerTitle: true,
-              leading: const Icon(CupertinoIcons.home),
+              leading: const Icon(
+                CupertinoIcons.home,
+                color: Colors.white,
+              ),
+              backgroundColor: Colors.deepPurple,
               actions: [
                 IconButton(
                     onPressed: () {
@@ -89,9 +96,12 @@ class _HomeScreenState extends State<HomeScreen> {
                         isSearch = !isSearch;
                       });
                     },
-                    icon: Icon(isSearch
-                        ? CupertinoIcons.clear_circled_solid
-                        : Icons.search)),
+                    icon: Icon(
+                      isSearch
+                          ? CupertinoIcons.clear_circled_solid
+                          : Icons.search,
+                      color: Colors.white,
+                    )),
                 IconButton(
                     onPressed: () {
                       Navigator.push(
@@ -100,7 +110,10 @@ class _HomeScreenState extends State<HomeScreen> {
                               builder: (context) =>
                                   ProfileScreen(user: Api.me)));
                     },
-                    icon: const Icon(Icons.more_vert)),
+                    icon: const Icon(
+                      Icons.more_vert,
+                      color: Colors.white,
+                    )),
               ],
             ),
             body: StreamBuilder(
@@ -134,14 +147,6 @@ class _HomeScreenState extends State<HomeScreen> {
                   );
                 }
               },
-            ),
-            floatingActionButton: FloatingActionButton(
-              onPressed: () async {
-                if (kDebugMode) {
-                  print('sing out successfull');
-                }
-              },
-              child: const Icon(CupertinoIcons.add),
             ),
           ),
         ),

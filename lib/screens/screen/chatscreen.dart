@@ -1,4 +1,3 @@
-
 import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
@@ -108,8 +107,8 @@ class _ChatscreenState extends State<Chatscreen> {
                   const Align(
                       alignment: Alignment.bottomRight,
                       child: Padding(
-                        padding: const EdgeInsets.only(
-                            right: 25, top: 10, bottom: 10),
+                        padding:
+                            EdgeInsets.only(right: 25, top: 10, bottom: 10),
                         child: CircularProgressIndicator(),
                       )),
                 chatInput(),
@@ -195,7 +194,7 @@ class _ChatscreenState extends State<Chatscreen> {
                           : widget.user.name.toString(),
                       style: const TextStyle(
                         fontSize: 16,
-                        color: Colors.black,
+                        color: Colors.white,
                         fontWeight: FontWeight.w500,
                       ),
                     ),
@@ -216,7 +215,7 @@ class _ChatscreenState extends State<Chatscreen> {
               ],
             );
           } else {
-          return const Center(
+            return const Center(
                 child:
                     CircularProgressIndicator()); // Show a loading indicator while waiting for data
           }

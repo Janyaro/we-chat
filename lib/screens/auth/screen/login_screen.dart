@@ -13,6 +13,7 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   bool isAnimate = false;
+  @override
   void initState() {
     super.initState();
     Future.delayed(const Duration(milliseconds: 500), () {

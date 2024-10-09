@@ -1,11 +1,9 @@
 import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:we_chat/models/ChatModel.dart';
 import 'package:we_chat/models/messageModel.dart';
-import 'package:we_chat/widget/messageCart.dart';
 
 class Api {
   static FirebaseAuth auth = FirebaseAuth.instance;
@@ -46,19 +44,19 @@ class Api {
 
   // Create a new user
   static Future<void> CreateUser() async {
-    final create_time = DateTime.now().millisecondsSinceEpoch;
-    final new_user = ChatModel(
+    final createTime = DateTime.now().millisecondsSinceEpoch;
+    final newUser = ChatModel(
         id: user.uid,
         name: user.displayName.toString(),
         email: user.email,
         about: 'Hey there, I am using chat app',
         image: user.photoURL,
-        createdAt: create_time.toString(),
-        lastActive: create_time.toString(),
+        createdAt: createTime.toString(),
+        lastActive: createTime.toString(),
         isOnline: false,
         pushToken: '');
 
-    await firestore.collection('users').doc(user.uid).set(new_user.toJson());
+    await firestore.collection('users').doc(user.uid).set(newUser.toJson());
   }
 
   // Fetch all users from the database
